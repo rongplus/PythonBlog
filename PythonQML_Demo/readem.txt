@@ -1,0 +1,12 @@
+# ViciBox-3
+
+### Run Qt App in Development (Windows)
+- Download and install [python](https://www.python.org/ftp/python/3.6.8/python-3.6.8-amd64.exe) 3.6.8 (support all the required modules) in a [PYTHON_FOLDER]
+- Download and install Git on windows, It is preferred to use [git-bash](https://git-scm.com/downloads) to activate python environments
+-  Open GitBash
+-  Change directory to [PYTHON_FOLDER] where python 3.6.8 was installed
+-  Create an environment that will be used to install the required modules in a [D3D_ENV] './python.exe -m venv d3d_env'
+-  Activate the environment using 'source d3d_env/Scripts/activate'
+-  Change directory to where [DEFEND_3D_BOX] repository was cloned
+-  Install the required modules using 'pip install -r requirement.txt'
+-  launch the application by executing  './build_run_qt.bat'
