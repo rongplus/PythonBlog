@@ -4,6 +4,7 @@ import pandas as pd
 
 all =[]
 gDataPath = "d:/analisis/"
+gDataPath = "c:/data/"
 gResultFile = "澳肖结果.xlsx"
 gAllResultFile = "澳肖结果All.xlsx"
 
@@ -14,7 +15,7 @@ def doJob():
     for sheet_name in xls_total.sheet_names:
         df1 = pd.read_excel(xls_total , sheet_name)
         
-        #print(df1.head)
+        print(sheet_name)
         #if sh_index==0:
         print(df1.columns.tolist())
         
@@ -32,6 +33,8 @@ def doJob():
         data[str(i)+"-2"] = all[i*4+1]  
     for i in range(sh_index):
         data[str(i)+"-3"] = all[i*4+2]
+    for i in range(sh_index):
+        data[str(i)+"-4"] = all[i*4+3]
 
     df = pd.DataFrame(data=data)
     print(df.columns.tolist())
@@ -42,8 +45,8 @@ def doJob():
     xls_total.close()
 
 
-#doJob()
+doJob()
 gResultFile = "澳尾结果.xlsx"
 gAllResultFile = "澳尾结果All.xlsx"
 
-doJob()
+#doJob()
