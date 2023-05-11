@@ -1,0 +1,8 @@
+<h1>欢迎 {{ username }}！</h1>
+
+
+{% if current_user.is_authenticated %}
+-- place logout button here --
+{% else %}
+-- place login button here --
+{% endif %}
