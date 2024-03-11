@@ -14,6 +14,27 @@ db_config = {
 conn = mysql.connector.connect(**db_config)
 cursor = conn.cursor(buffered=True)
 
+@app.route("/")
+def home():
+    all_routes = get_all_routes()
+    print("List of all routes:")
+    result=f"<br>"
+    for route in all_routes:
+        print(f"/{route}")
+        result+= f"<a href=" + f"/{route}" + f">" + f"{route}" + f"</a><br>"
+    return "Welcome to the home page!" + result
+
+@app.route("/about")
+def about():
+    return "This is the about page."
+
+def get_all_routes():
+    routes = []
+    for rule in app.url_map.iter_rules():
+        if rule.endpoint != "static":
+            routes.append(rule.endpoint)
+    return routes
+
 @app.route("/add", methods=["GET", "POST"])
 def add():
     if request.method == "POST":
@@ -26,6 +47,18 @@ def add():
 
     return render_template("index.html")
 
+@app.route("/addwrong", methods=["GET", "POST"])
+def addwrong():
+    if request.method == "POST":
+        question = request.form.get("question")
+        answers = request.form.get("answers")
+        rotation = request.form.get("rotation")
+        if question:
+            save_note_to_db1(question,answers,rotation)
+            return redirect(url_for("add"))
+
+    return render_template("index.html")
+
 def save_note_to_db(question, answers, rotation):
     try:
         insert_query = "INSERT INTO notes (question, answers, rotation,correct) VALUES (%s, %s, %s,1)"
@@ -33,6 +66,15 @@ def save_note_to_db(question, answers, rotation):
         conn.commit()
     except mysql.connector.Error as err:
         print(f"Error saving note: {err}")
+
+def save_note_to_db1(question, answers, rotation):
+    try:
+        insert_query = "INSERT INTO notes (question, answers, rotation,correct) VALUES (%s, %s, %s,0)"
+        cursor.execute(insert_query, (question, answers, rotation))
+        conn.commit()
+    except mysql.connector.Error as err:
+        print(f"Error saving note: {err}")
+
 
 @app.route("/query", methods=["GET", "POST"])
 def query():
@@ -54,4 +96,5 @@ def query():
     return render_template("question.html", question=record[0],answers=record[1],rotation=record[2])
 
 if __name__ == "__main__":
+    
     app.run(debug=True)
