@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Records List</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Welcome to the Questions Page</h2>
+    <!-- Add home page content -->
     <h1>Records List</h1>
     <table>
         <thead>
@@ -18,7 +17,9 @@
         <tbody>
             {% for record in records %}
                 <tr>
-                    <td>{{ record[0] }}</td>
+                    <td>                        
+                        {{record[0]}}
+                    </td>
                     <td>{{ record[1] }}</td>
                     <td>{{ record[2] }}</td>
                     <td>{{ record[3] }}</td>
@@ -27,5 +28,7 @@
             {% endfor %}
         </tbody>
     </table>
-</body>
-</html>
+
+{% endblock %}
+
+

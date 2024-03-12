@@ -27,7 +27,7 @@ def home():
 
 @app.route("/about")
 def about():
-    return "This is the about page."
+    return render_template("about.html")
 
 def get_all_routes():
     routes = []
@@ -58,7 +58,7 @@ def addwrong():
             save_note_to_db1(question,answers,rotation)
             return redirect(url_for("addwrong"))
 
-    return render_template("index.html")
+    return render_template("addwrong.html")
 
 def save_note_to_db(question, answers, rotation):
     try:
