@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Records List</title>
+</head>
+<body>
+    <h1>Records List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>question</th>
+                <th>answers</th>
+                <th>rotation</th>
+                <th>correct</th>
+                <!-- Add other columns here -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+                <tr>
+                    <td>{{ record[0] }}</td>
+                    <td>{{ record[1] }}</td>
+                    <td>{{ record[2] }}</td>
+                    <td>{{ record[3] }}</td>
+                    <!-- Add other columns here -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

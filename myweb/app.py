@@ -22,6 +22,7 @@ def home():
     for route in all_routes:
         print(f"/{route}")
         result+= f"<a href=" + f"/{route}" + f">" + f"{route}" + f"</a><br>"
+    return render_template("home.html", routes=all_routes)
     return "Welcome to the home page!" + result
 
 @app.route("/about")
@@ -55,22 +56,32 @@ def addwrong():
         rotation = request.form.get("rotation")
         if question:
             save_note_to_db1(question,answers,rotation)
-            return redirect(url_for("add"))
+            return redirect(url_for("addwrong"))
 
     return render_template("index.html")
 
 def save_note_to_db(question, answers, rotation):
     try:
-        insert_query = "INSERT INTO notes (question, answers, rotation,correct) VALUES (%s, %s, %s,1)"
-        cursor.execute(insert_query, (question, answers, rotation))
+        sql = (
+        "INSERT IGNORE INTO notes (question, answers, rotation,correct) "
+        "VALUES (%s, %s, %s, 1)"
+        )
+        val = (question, answers, rotation)
+       
+        cursor.execute(sql, val)
         conn.commit()
     except mysql.connector.Error as err:
         print(f"Error saving note: {err}")
 
 def save_note_to_db1(question, answers, rotation):
     try:
-        insert_query = "INSERT INTO notes (question, answers, rotation,correct) VALUES (%s, %s, %s,0)"
-        cursor.execute(insert_query, (question, answers, rotation))
+        sql = (
+        "INSERT IGNORE INTO notes (question, answers, rotation,correct) "
+        "VALUES (%s, %s, %s, 0)"
+        )
+        val = (question, question, answers, rotation)
+       
+        cursor.execute(sql, val)
         conn.commit()
     except mysql.connector.Error as err:
         print(f"Error saving note: {err}")
@@ -95,6 +106,38 @@ def query():
    
     return render_template("question.html", question=record[0],answers=record[1],rotation=record[2])
 
+
+@app.route('/questions')
+def questions():
+    #global cursor  # Use the global cursor
+
+    try:
+        cursor = conn.cursor(buffered=True)
+        cursor.execute("SELECT * FROM notes")        
+        data = cursor.fetchall()
+        for record in data:
+            s = ''
+            st = record[0]            
+            a = st.find('a)')
+            b = st.find('b)')
+            c = st.find('c)')
+            d = st.find('d)')
+            if d!=-1:                
+                print("------find-----")
+                q = st[0:a]
+                aa = st[a:b]
+                ab = st[b:c]
+                ac = st[c:d]
+                ad = st[d:]
+                s = s + f"<br>"+q+ f"<br>"+aa+ f"<br>"+ab+ f"<br>"+ac+ f"<br>"+ad        
+            else:
+                s = s + str(st) + f"<br>"
+            #record[0]=str(s)  
+            print(s)
+        return render_template('questions.html', records=data)
+    except Exception as e:
+        return f"Error fetching records: {str(e)}"
+    
 if __name__ == "__main__":
     
     app.run(debug=True)
