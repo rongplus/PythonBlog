@@ -36,17 +36,14 @@ def get_all_routes():
             routes.append(rule.endpoint)
     return routes
 
-@app.route("/add", methods=["GET", "POST"])
-def add():
-    if request.method == "POST":
-        question = request.form.get("question")
-        answers = request.form.get("answers")
-        rotation = request.form.get("rotation")
-        if question:
-            save_note_to_db(question,answers,rotation)
-            return redirect(url_for("add"))
+@app.route("/addright", methods=["GET", "POST"])
+def addright():
+    if request.method == "POST":        
+           return "addright"
+    elif request.method =="GET":
+        return "ABC"
 
-    return render_template("index.html")
+    return render_template("addright.html")
 
 @app.route("/addwrong", methods=["GET", "POST"])
 def addwrong():
@@ -106,6 +103,52 @@ def query():
    
     return render_template("question.html", question=record[0],answers=record[1],rotation=record[2])
 
+def saveQuestions(question,answerA ,answerB ,answerC ,
+        answerD ,answer ,rotation,correct ,module):
+    try:
+        sql = (
+        "INSERT IGNORE INTO insurance (question,answerA ,answerB ,answerC ,"
+        " answerD ,answer ,rotation ,correct ,module) "
+        " VALUES (%s, %s, %s, %s,%s,%s,%s,%s,%s) "
+        )
+        val = (question,answerA ,answerB ,answerC , answerD ,answer ,rotation,correct ,module)
+       
+        cursor.execute(sql, val)
+        conn.commit()
+    except mysql.connector.Error as err:
+        print(f"Error saving note: {err}")
+
+
+@app.route("/add", methods=["GET", "POST"])
+def add():
+     if request.method == "POST":
+         con= request.form.get("question")
+         
+         if con:
+            pos1 = con.find('a)')
+            question = con[:pos1]
+            pos2 = con.find('b)')
+            ans_a = con[pos1:pos2]
+            pos1 = pos2
+            pos2 = con.find('c)')
+            ans_b = con[pos1:pos2]
+            pos1 = pos2
+            pos2 = con.find('d)')
+            ans_c = con[pos1:pos2]
+            pos1 = pos2
+            pos2 =  con.find('YOUR ANSWER')
+            ans_d = con[pos1:pos2]
+            pos1 = pos2
+            pos2 = con.find('Rationale:')
+            answer = con[pos1+10:pos2]
+            rotation = con[pos2+10:]
+            
+            saveQuestions(question,ans_a,ans_b,ans_c,ans_d,answer,rotation,1,1)
+            return render_template("index.html", questions=[question,ans_a,ans_b,ans_c,ans_d,answer,rotation])
+          
+
+     return render_template("index.html")
+
 
 @app.route('/questions')
 def questions():
@@ -115,25 +158,7 @@ def questions():
         cursor = conn.cursor(buffered=True)
         cursor.execute("SELECT * FROM notes")        
         data = cursor.fetchall()
-        for record in data:
-            s = ''
-            st = record[0]            
-            a = st.find('a)')
-            b = st.find('b)')
-            c = st.find('c)')
-            d = st.find('d)')
-            if d!=-1:                
-                print("------find-----")
-                q = st[0:a]
-                aa = st[a:b]
-                ab = st[b:c]
-                ac = st[c:d]
-                ad = st[d:]
-                s = s + f"<br>"+q+ f"<br>"+aa+ f"<br>"+ab+ f"<br>"+ac+ f"<br>"+ad        
-            else:
-                s = s + str(st) + f"<br>"
-            #record[0]=str(s)  
-            print(s)
+    
         return render_template('questions.html', records=data)
     except Exception as e:
         return f"Error fetching records: {str(e)}"
