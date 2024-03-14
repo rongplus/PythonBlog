@@ -1,18 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
+from mydb import *
+import testapi
+
 
 app = Flask(__name__)
 
-# Configure MySQL connection
-db_config = {
-    "host": "localhost",
-    "user": "root",
-    "password": "Good2017!",
-    "database": "HackerBank",
-}
-# Initialize global cursor
-conn = mysql.connector.connect(**db_config)
-cursor = conn.cursor(buffered=True)
+
+
 
 @app.route("/")
 def home():
@@ -57,32 +52,10 @@ def addwrong():
 
     return render_template("addwrong.html")
 
-def save_note_to_db(question, answers, rotation):
-    try:
-        sql = (
-        "INSERT IGNORE INTO notes (question, answers, rotation,correct) "
-        "VALUES (%s, %s, %s, 1)"
-        )
-        val = (question, answers, rotation)
-       
-        cursor.execute(sql, val)
-        conn.commit()
-    except mysql.connector.Error as err:
-        print(f"Error saving note: {err}")
-
-def save_note_to_db1(question, answers, rotation):
-    try:
-        sql = (
-        "INSERT IGNORE INTO notes (question, answers, rotation,correct) "
-        "VALUES (%s, %s, %s, 0)"
-        )
-        val = (question, question, answers, rotation)
-       
-        cursor.execute(sql, val)
-        conn.commit()
-    except mysql.connector.Error as err:
-        print(f"Error saving note: {err}")
-
+app.add_url_rule('/test', methods=["GET", "POST"], view_func=testapi.test)
+app.add_url_rule('/test1', methods=["GET", "POST"], view_func=testapi.test1)
+app.add_url_rule('/artical', methods=["GET", "POST"], view_func=testapi.template)
+app.add_url_rule('/demo', methods=["GET", "POST"], view_func=testapi.template2)
 
 @app.route("/query", methods=["GET", "POST"])
 def query():
@@ -103,20 +76,6 @@ def query():
    
     return render_template("question.html", question=record[0],answers=record[1],rotation=record[2])
 
-def saveQuestions(question,answerA ,answerB ,answerC ,
-        answerD ,answer ,rotation,correct ,module):
-    try:
-        sql = (
-        "INSERT IGNORE INTO insurance (question,answerA ,answerB ,answerC ,"
-        " answerD ,answer ,rotation ,correct ,module) "
-        " VALUES (%s, %s, %s, %s,%s,%s,%s,%s,%s) "
-        )
-        val = (question,answerA ,answerB ,answerC , answerD ,answer ,rotation,correct ,module)
-       
-        cursor.execute(sql, val)
-        conn.commit()
-    except mysql.connector.Error as err:
-        print(f"Error saving note: {err}")
 
 
 @app.route("/add", methods=["GET", "POST"])
@@ -149,20 +108,13 @@ def add():
 
      return render_template("index.html")
 
-
 @app.route('/questions')
-def questions():
-    #global cursor  # Use the global cursor
+def questions():     
+    data = getAllQuestion()
+    return render_template('questions.html', records=data)
+    
+    
 
-    try:
-        cursor = conn.cursor(buffered=True)
-        cursor.execute("SELECT * FROM notes")        
-        data = cursor.fetchall()
-    
-        return render_template('questions.html', records=data)
-    except Exception as e:
-        return f"Error fetching records: {str(e)}"
-    
 if __name__ == "__main__":
     
     app.run(debug=True)
