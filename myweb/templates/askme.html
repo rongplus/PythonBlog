@@ -1,0 +1,26 @@
+<!-- templates/index.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Welcome to the Add Right quesion Page</h2>
+    <!-- Add home page content -->
+
+    <h1>Welcome to the quesion Page</h1>
+
+    {% if joke %}
+    {{joke}}
+    {% endif %}
+
+    <form method="post">
+        <h1>Enter your question</h1>
+        
+        <textarea id="tt_question" name="question" rows="8" cols="120"></textarea>
+        
+        <br>
+        <input type="submit" value="Ask">
+    </form>
+
+{% endblock %}
+
+

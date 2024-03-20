@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from mydb import *
+from openai import OpenAI
+client = OpenAI()
 
 def showone(): 
     global cursor  # Use the global cursor
@@ -125,3 +127,35 @@ def addWrongAnserQuestion():
           
 
     return render_template("index.html")
+
+
+def tellJoke():
+    completion = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    temperature = 0.2,
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Tell me a joke."}
+    ]
+    )
+
+    #print(completion.choices[0].message)
+    a = completion.choices[0].message.content.split('\n') 
+
+    return render_template("joke.html",joke=a)
+
+def askQuestion():
+    question = ''
+    if request.method == "POST":   
+        question = request.form.get("question")
+    if question:
+        completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": question}
+        ]
+        )
+        return render_template("askme.html",joke=completion.choices[0].message.content)
+    
+    return render_template("askme.html")

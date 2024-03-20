@@ -67,6 +67,8 @@ def modulequestions():
 app.add_url_rule('/showone', methods=["GET", "POST"], view_func=webapi.showone)
 app.add_url_rule('/addRightAnserQuestion', methods=["GET", "POST"], view_func=webapi.addRightAnserQuestion)
 app.add_url_rule('/addWrongAnserQuestion', methods=["GET", "POST"], view_func=webapi.addWrongAnserQuestion)
+app.add_url_rule('/joke', methods=["GET", "POST"], view_func=webapi.tellJoke)
+app.add_url_rule('/askme', methods=["GET", "POST"], view_func=webapi.askQuestion)
 
 def get_all_routes():
     routes = []

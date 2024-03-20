@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Welcome to the about Page</h2>
+    {% for s in joke %}
+    <p>{{ s }}</p>
+    {% endfor %}
+
+    <form method="get">
+        <input type="submit" name="next_button" value="Next">
+    </form>
+{% endblock %}
