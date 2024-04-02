@@ -47,6 +47,10 @@ li:last-child {
         .active {
           background-color: #04AA6D;
         }
+
+        .content {
+    padding-top: 25px; /* Adjust this value based on the height of your header */
+  }
         </style>
 </head>
 <body>
@@ -58,13 +62,13 @@ li:last-child {
                 <li><a href="/about">About</a></li>
                 <!-- Add other navigation links -->
                 <li><a href="/add">Add Qustion</a></li>
-                <li><a href="/showone">One Question</a></li>
+                <li><a href="/search">Search Question</a></li>
                 <li><a href="/modulequestions">Show All Question</a></li>
                 <li><a href="/joke">Tell Joke</a></li>
-                <li><a href="/askme">askme</a></li>
+                <!--<li><a href="/askme">askme</a></li> -->
                 <div style="float:right;">
                     
-                    <li><a href="/questions">Register/Login</a></li>
+                    <li><a href="/about">Register/Login</a></li>
                   </div>
 
             </ul>
@@ -73,7 +77,7 @@ li:last-child {
         </nav>
     </header>
 
-    <div class="content">
+    <div class="content"  >
         <!-- Content specific to each page will go here -->
         {% block content %}{% endblock %}
     </div>
